@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuisine La Shop - Commande</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .logo-img {
+            max-width: 400px;
+            width: 100%;
+            height: auto;
+            margin: 0 auto;
+            display: block;
+        }
+
+        .admin-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #667eea;
+            border: 2px solid #667eea;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+
+        .admin-btn:hover {
+            background: #764ba2;
+            border-color: #764ba2;
+        }
+
+        .form-content {
+            padding: 40px;
+        }
+
+        .section-title {
+            font-size: 1.5em;
+            color: #667eea;
+            margin: 30px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .section-title:first-child {
+            margin-top: 0;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+            font-family: inherit;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .menu-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .menu-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .menu-item-info {
+            flex: 1;
+        }
+
+        .menu-item-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            object-fit: cover;
+            margin-right: 15px;
+        }
+
+        .menu-item-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .menu-item-desc {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .menu-item-price {
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .quantity-input {
+            width: 80px;
+            text-align: center;
+        }
+
+        .total-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .total-section h3 {
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+
+        .total-amount {
+            font-size: 2.5em;
+            font-weight: bold;
+        }
+
+        .submit-btn, .btn {
+            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .submit-btn:hover, .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(37, 211, 102, 0.4);
+        }
+
+        .submit-btn:active, .btn:active {
+            transform: translateY(0);
+        }
+
+        .whatsapp-icon {
+            font-size: 1.5em;
+        }
+
+        .error {
+            border-color: #ff4444 !important;
+        }
+
+        .error-message {
+            color: #ff4444;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .info-banner {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.7);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 2% auto;
+            padding: 0;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 1000px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .close {
+            color: white;
+            font-size: 35px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .close:hover {
+            color: #ff6b9d;
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .admin-login {
+            max-width: 400px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .admin-login input {
+            margin-bottom: 20px;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff6b6b 0%, #c92a2a 100%);
+            padding: 10px 20px;
+            font-size: 0.9em;
+        }
+
+        .btn-small {
+            padding: 10px 20px;
+            font-size: 0.9em;
+            width: auto;
+        }
+
+        .product-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .product-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .product-card h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .image-preview {
+            width: 100%;
+            max-width: 200px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .add-product-section {
+            background: linear-gradient(135deg, #51cf66 0%, #37b24d 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .form-content {
+                padding: 20px;
+            }
+
+            .header {
+                padding: 20px;
+            }
+
+            .logo-img {
+                max-width: 250px;
+            }
+
+            .menu-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .quantity-input {
+                width: 100%;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-btn {
+                font-size: 0.8em;
+                padding: 6px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <button class="admin-btn" onclick="openAdminModal()">🔐 Admin</button>
+            <img src="https://1drv.ms/i/c/5610677618283bac/ERVSe6GDulZJp0_9lmMsKwEBoSXoQfxqyhUr8SmCdMh4VQ" alt="Cuisine La Shop @ Marie - Puerto Vallarta" class="logo-img">
+        </div>
+
+        <div class="form-content">
+            <div class="info-banner">
+                <strong>📍 Livraison disponible:</strong> Puerto Vallarta, Nuevo Vallarta, Bucerias
+            </div>
+
+            <form id="orderForm">
+                <h2 class="section-title">Informations Client</h2>
+                
+                <div class="form-group">
+                    <label for="name">Nom complet *</label>
+                    <input type="text" id="name" required placeholder="Votre nom">
+                </div>
+
+                <div class="form-group">
+                    <label for="country">Pays *</label>
+                    <select id="country" required>
+                        <option value="">Sélectionnez votre pays</option>
+                        <option value="MX">🇲🇽 Mexique</option>
+                        <option value="CA">🇨🇦 Canada</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Numéro de téléphone (10 chiffres) *</label>
+                    <input type="tel" id="phone" required placeholder="1234567890" maxlength="10" pattern="[0-9]{10}">
+                    <small class="error-message" id="phoneError" style="display:none;">Le numéro doit contenir exactement 10 chiffres</small>
+                </div>
+
+                <div id="menuContainer"></div>
+
+                <div class="total-section">
+                    <h3>TOTAL DE LA COMMANDE</h3>
+                    <div class="total-amount" id="totalAmount">0 MX</div>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    <span class="whatsapp-icon">📱</span>
+                    <span>Envoyer la commande par WhatsApp</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div id="adminModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Administration - Cuisine La Shop</h2>
+                <span class="close" onclick="closeAdminModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="loginSection" class="admin-login">
+                    <h3>Connexion Administrateur</h3>
+                    <input type="password" id="adminPassword" placeholder="Mot de passe">
+                    <button class="btn btn-secondary" onclick="adminLogin()">Se connecter</button>
+                    <p class="error-message" id="loginError" style="display:none;">Mot de passe incorrect</p>
+                </div>
+
+                <div id="adminPanel" class="hidden">
+                    <h3>Gestion des Produits</h3>
+                    <div id="adminProductsList"></div>
+
+                    <div class="add-product-section">
+                        <h3>➕ Ajouter un nouveau produit</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Catégorie</label>
+                                <select id="newCategory">
+                                    <option value="CUISINE">🍽️ CUISINE</option>
+                                    <option value="NOUVEAUTÉS">✨ NOUVEAUTÉS</option>
+                                    <option value="DESSERTS">🍰 DESSERTS</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Nom du produit</label>
+                                <input type="text" id="newName" placeholder="Ex: CRETON">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Description</label>
+                                <input type="text" id="newDesc" placeholder="Ex: 250 gr">
+                            </div>
+                            <div class="form-group">
+                                <label>Prix (MX)</label>
+                                <input type="number" id="newPrice" placeholder="120">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>URL de l'image (optionnel)</label>
+                            <input type="text" id="newImage" placeholder="https://exemple.com/image.jpg">
+                        </div>
+                        <button class="btn btn-secondary btn-small" onclick="addNewProduct()">Ajouter le produit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const ADMIN_PASSWORD = 'L@Shop';
+        const WHATSAPP_NUMBER = '523313646560';
+
+        let menuData = {
+            'CUISINE': [
+                {id: 1, name: 'CRETON', desc: '250 gr', price: 120, image: ''},
+                {id: 2, name: 'CRETON GRAND FORMAT', desc: '500 gr', price: 220, image: ''},
+                {id: 3, name: 'SAUCE À SPAGHETTI', desc: '600 gr (2-3 portions)', price: 150, image: ''},
+                {id: 4, name: 'LASAGNE ENTIÈRE / CUITE', desc: 'Familial sur commande', price: 750, image: ''},
+                {id: 5, name: 'LASAGNE PORTIONNÉE / CUITE', desc: '2-3 portions', price: 250, image: ''},
+                {id: 6, name: 'TOURTIÈRE DU LAC CUITE', desc: 'Familial sur commande', price: 750, image: ''},
+                {id: 7, name: 'TOURTIÈRE DU LAC PORTIONNÉE / CUITE', desc: '2-3 portions', price: 250, image: ''},
+                {id: 8, name: 'PÂTÉ CHINOIS CUIT', desc: '2-3 portions', price: 250, image: ''},
+                {id: 9, name: 'PÂTÉ AU POULET CUIT', desc: '2-3 portions', price: 250, image: ''},
+                {id: 10, name: 'FÈVE AU LARD', desc: '450 gr', price: 150, image: ''},
+                {id: 11, name: 'CIGAR AUX CHOUX', desc: '2-3 portions', price: 250, image: ''},
+                {id: 12, name: 'RAGOUT DE BOULETTE', desc: 'Individuel', price: 150, image: ''},
+                {id: 13, name: 'RAGOUT DE BOULETTE', desc: '2-3 portions', price: 300, image: ''}
+            ],
+            'NOUVEAUTÉS': [
+                {id: 14, name: 'SOUPE À L\'OIGNON', desc: 'Individuel (avec fromage et croutons)', price: 200, image: ''},
+                {id: 15, name: 'SOUPE À L\'OIGNON', desc: '2 portions (avec fromage et croutons)', price: 400, image: ''},
+                {id: 16, name: 'QUICHE OIGNONS CARAMÉLISÉS', desc: 'Sans gluten - 8 pouces', price: 300, image: ''},
+                {id: 17, name: 'CHILI CON CARNE @ MARIE', desc: '500 ml', price: 250, image: ''},
+                {id: 18, name: 'CHILI CON CARNE @ MARIE', desc: '1 litre', price: 500, image: ''},
+                {id: 19, name: 'SOPA DE TORTILLA', desc: 'Individuel', price: 200, image: ''},
+                {id: 20, name: 'SOPA DE TORTILLA', desc: '2 portions', price: 400, image: ''}
+            ],
+            'DESSERTS': [
+                {id: 21, name: 'CROUSTADE AUX POMMES', desc: 'Individuel', price: 100, image: ''},
+                {id: 22, name: 'CROUSTADE AUX POMMES', desc: '3-4 portions', price: 350, image: ''},
+                {id: 23, name: 'POUDING CHÔMEUR', desc: 'Individuel', price: 100, image: ''},
+                {id: 24, name: 'POUDING CHÔMEUR', desc: '3-4 portions', price: 350, image: ''}
+            ]
+        };
+
+        async function loadMenu() {
+            try {
+                const result = await window.storage.get('menu-data');
+                if (result && result.value) {
+                    menuData = JSON.parse(result.value);
+                }
+            } catch (error) {
+                console.log('Using default menu');
+            }
+            renderMenu();
+        }
+
+        async function saveMenu() {
+            try {
+                await window.storage.set('menu-data', JSON.stringify(menuData));
+            } catch (error) {
+                console.error('Error saving menu:', error);
+            }
+        }
+
+        function renderMenu() {
+            const container = document.getElementById('menuContainer');
+            container.innerHTML = '';
+            const categoryIcons = { 'CUISINE': '🍽️', 'NOUVEAUTÉS': '✨', 'DESSERTS': '🍰' };
+
+            for (const [category, items] of Object.entries(menuData)) {
+                const section = document.createElement('div');
+                section.innerHTML = `<h2 class="section-title">${categoryIcons[category]} ${category}</h2>`;
+                
+                items.forEach(item => {
+                    const menuItem = document.createElement('div');
+                    menuItem.className = 'menu-item';
+                    menuItem.innerHTML = `
+                        ${item.image ? `<img src="${item.image}" class="menu-item-image" alt="${item.name}">` : ''}
+                        <div class="menu-item-info">
+                            <div class="menu-item-name">${item.name}</div>
+                            <div class="menu-item-desc">${item.desc}</div>
+                            <div class="menu-item-price">${item.price} MX</div>
+                        </div>
+                        <input type="number" class="quantity-input" data-id="${item.id}" data-price="${item.price}" 
+                               data-name="${item.name} (${item.desc})" min="0" value="0">
+                    `;
+                    section.appendChild(menuItem);
+                });
+                container.appendChild(section);
+            }
+            attachQuantityListeners();
+        }
+
+        function attachQuantityListeners() {
+            document.querySelectorAll('.quantity-input').forEach(input => {
+                input.addEventListener('input', updateTotal);
+            });
+        }
+
+        function updateTotal() {
+            let total = 0;
+            document.querySelectorAll('.quantity-input').forEach(input => {
+                const quantity = parseInt(input.value) || 0;
+                const price = parseFloat(input.dataset.price);
+                total += quantity * price;
+            });
+            document.getElementById('totalAmount').textContent = total.toFixed(0) + ' MX';
+        }
+
+        document.getElementById('phone').addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^0-9]/g, '');
+            const phoneError = document.getElementById('phoneError');
+            if (this.value.length !== 10 && this.value.length > 0) {
+                phoneError.style.display = 'block';
+                this.classList.add('error');
+            } else {
+                phoneError.style.display = 'none';
+                this.classList.remove('error');
+            }
+        });
+
+        document.getElementById('orderForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const country = document.getElementById('country').value;
+            const phone = document.getElementById('phone').value;
+
+            if (!name || !country || phone.length !== 10) {
+                alert('Veuillez remplir tous les champs obligatoires correctement.');
+                return;
+            }
+
+            let orderItems = [];
+            let total = 0;
+
+            document.querySelectorAll('.quantity-input').forEach(input => {
+                const quantity = parseInt(input.value) || 0;
+                if (quantity > 0) {
+                    const itemName = input.dataset.name;
+                    const price = parseFloat(input.dataset.price);
+                    const subtotal = quantity * price;
+                    total += subtotal;
+                    orderItems.push(`${quantity}x ${itemName} - ${subtotal} MX`);
+                }
+            });
+
+            if (orderItems.length === 0) {
+                alert('Veuillez sélectionner au moins un article.');
+                return;
+            }
+
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('fr-FR', {
+                year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
+            });
+
+            const countryFlags = {MX: '🇲🇽', CA: '🇨🇦'};
+            const countryNames = {MX: 'Mexique', CA: 'Canada'};
+            
+            let message = `🛒 *NOUVELLE COMMANDE - CUISINE LA SHOP*\n\n`;
+            message += `👤 *Client:* ${name}\n`;
+            message += `${countryFlags[country]} *Pays:* ${countryNames[country]}\n`;
+            message += `📞 *Téléphone:* ${phone}\n`;
+            message += `📅 *Date:* ${dateStr}\n\n`;
+            message += `📋 *DÉTAILS DE LA COMMANDE:*\n`;
+            message += orderItems.join('\n');
+            message += `\n\n💰 *TOTAL: ${total} MX*`;
+
+            window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, '_blank');
+        });
+
+        function openAdminModal() {
+            document.getElementById('adminModal').style.display = 'block';
+        }
+
+        function closeAdminModal() {
+            document.getElementById('adminModal').style.display = 'none';
+            document.getElementById('loginSection').classList.remove('hidden');
+            document.getElementById('adminPanel').classList.add('hidden');
+            document.getElementById('adminPassword').value = '';
+        }
+
+        function adminLogin() {
+            const password = document.getElementById('adminPassword').value;
+            const loginError = document.getElementById('loginError');
+
+            if (password === ADMIN_PASSWORD) {
+                document.getElementById('loginSection').classList.add('hidden');
+                document.getElementById('adminPanel').classList.remove('hidden');
+                loginError.style.display = 'none';
+                renderAdminPanel();
+            } else {
+                loginError.style.display = 'block';
+            }
+        }
+
+        function renderAdminPanel() {
+            const container = document.getElementById('adminProductsList');
+            container.innerHTML = '';
+
+            for (const [category, items] of Object.entries(menuData)) {
+                items.forEach((item, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'product-card';
+                    card.innerHTML = `
+                        <div class="product-card-header">
+                            <h3>${category} - ${item.name}</h3>
+                            <button class="btn btn-danger btn-small" onclick="deleteProduct('${category}', ${index})">🗑️ Supprimer</button>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Nom</label>
+                                <input type="text" value="${item.name}" onchange="updateProduct('${category}', ${index}, 'name', this.value)">
+                            </div>
+                            <div class="form-group">
+                                <label>Description</label>
+                                <input type="text" value="${item.desc}" onchange="updateProduct('${category}', ${index}, 'desc', this.value)">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Prix (MX)</label>
+                                <input type="number" value="${item.price}" onchange="updateProduct('${category}', ${index}, 'price', this.value)">
+                            </div>
+                            <div class="form-group">
+                                <label>URL Image</label>
+                                <input type="text" value="${item.image}" onchange="updateProduct('${category}', ${index}, 'image', this.value)">
+                            </div>
+                        </div>
+                        ${item.image ? `<img src="${item.image}" class="image-preview" alt="Preview">` : ''}
+                    `;
+                    container.appendChild(card);
+                });
+            }
+        }
+
+        function updateProduct(category, index, field, value) {
+            if (field === 'price') {
+                menuData[category][index][field] = parseFloat(value);
+            } else {
+                menuData[category][index][field] = value;
+            }
+            saveMenu();
+            renderMenu();
+            renderAdminPanel();
+        }
+
+        function deleteProduct(category, index) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer ce produit?')) {
+                menuData[category].splice(index, 1);
+                saveMenu();
+                renderMenu();
+                renderAdminPanel();
+            }
+        }
+
+        function addNewProduct() {
+            const category = document.getElementById('newCategory').value;
+            const name = document.getElementById('newName').value;
+            const desc = document.getElementById('newDesc').value;
+            const price = parseFloat(document.getElementById('newPrice').value);
+            const image = document.getElementById('newImage').value;
+
+            if (!name || !desc || !price) {
+                alert('Veuillez remplir tous les champs obligatoires');
+                return;
+            }
+
+            const newId = Math.max(...Object.values(menuData).flat().map(item => item.id)) + 1;
+
+            menuData[category].push({
+                id: newId,
+                name: name,
+                desc: desc,
+                price: price,
+                image: image
+            });
+
+            document.getElementById('newName').value = '';
+            document.getElementById('newDesc').value = '';
+            document.getElementById('newPrice').value = '';
+            document.getElementById('newImage').value = '';
+
+            saveMenu();
+            renderMenu();
+            renderAdminPanel();
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('adminModal');
+            if (event.target === modal) {
+                closeAdminModal();
+            }
+        }
+
+        document.getElementById('adminPassword').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                adminLogin();
+            }
+        });
+
+        loadMenu();
+    </script>
+</body>
+</html>
